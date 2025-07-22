@@ -12,8 +12,8 @@ public class HelloController {
 
     private final ChatClient chatClient;
 
-    public HelloController(ChatClient.Builder chatClientBuilder) {
-        this.chatClient = chatClientBuilder.build();
+    public HelloController(ChatClient.Builder chatClientBuilder, HttpSession httpSession) {
+        this.chatClient = chatClientBuilder.defaultAdvisors(new PerSessionMessageChatMemoryAdvisor(MessageWindowChatMemory.builder().build(), httpSession)).build();
     }
 
     @PostMapping("/call")
