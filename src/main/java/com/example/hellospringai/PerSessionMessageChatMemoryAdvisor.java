@@ -13,27 +13,27 @@ import org.springframework.ai.chat.memory.ChatMemory;
 @RequiredArgsConstructor
 public class PerSessionMessageChatMemoryAdvisor implements CallAdvisor {
 
-    private final ChatMemory chatMemory;
+	private final ChatMemory chatMemory;
 
-    private final HttpSession httpSession;
+	private final HttpSession httpSession;
 
-    @Override
-    public ChatClientResponse adviseCall(ChatClientRequest chatClientRequest, CallAdvisorChain callAdvisorChain) {
-        String sessionId = httpSession.getId();
-        MessageChatMemoryAdvisor delegate = MessageChatMemoryAdvisor.builder(this.chatMemory)
-                .conversationId(sessionId)
-                .build();
-        return delegate.adviseCall(chatClientRequest, callAdvisorChain);
-    }
+	@Override
+	public ChatClientResponse adviseCall(ChatClientRequest chatClientRequest, CallAdvisorChain callAdvisorChain) {
+		String sessionId = httpSession.getId();
+		MessageChatMemoryAdvisor delegate = MessageChatMemoryAdvisor.builder(this.chatMemory)
+			.conversationId(sessionId)
+			.build();
+		return delegate.adviseCall(chatClientRequest, callAdvisorChain);
+	}
 
-    @Override
-    public String getName() {
-        return this.getClass().getName();
-    }
+	@Override
+	public String getName() {
+		return this.getClass().getName();
+	}
 
-    @Override
-    public int getOrder() {
-        return Advisor.DEFAULT_CHAT_MEMORY_PRECEDENCE_ORDER;
-    }
+	@Override
+	public int getOrder() {
+		return Advisor.DEFAULT_CHAT_MEMORY_PRECEDENCE_ORDER;
+	}
 
 }

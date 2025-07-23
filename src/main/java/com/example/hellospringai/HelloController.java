@@ -12,27 +12,30 @@ import java.util.List;
 @RestController
 public class HelloController {
 
-    private final ChatMemory chatMemory;
-    private final ChatClient chatClient;
+	private final ChatMemory chatMemory;
 
-    public HelloController(ChatClient.Builder chatClientBuilder, HttpSession httpSession) {
-        this.chatMemory = MessageWindowChatMemory.builder().build();
-        this.chatClient = chatClientBuilder.defaultAdvisors(new PerSessionMessageChatMemoryAdvisor(this.chatMemory, httpSession)).build();
-    }
+	private final ChatClient chatClient;
 
-    @PostMapping("/call")
-    public String call(@RequestParam String prompt) {
-        return this.chatClient.prompt().messages().user(prompt).call().content();
-    }
+	public HelloController(ChatClient.Builder chatClientBuilder, HttpSession httpSession) {
+		this.chatMemory = MessageWindowChatMemory.builder().build();
+		this.chatClient = chatClientBuilder
+			.defaultAdvisors(new PerSessionMessageChatMemoryAdvisor(this.chatMemory, httpSession))
+			.build();
+	}
 
-    @GetMapping("/history")
-    public List<Message> history(HttpSession httpSession) {
-        return this.chatMemory.get(httpSession.getId());
-    }
+	@PostMapping("/call")
+	public String call(@RequestParam String prompt) {
+		return this.chatClient.prompt().messages().user(prompt).call().content();
+	}
 
-    @DeleteMapping("/history/clear")
-    public void clearHistory(HttpSession httpSession) {
-        this.chatMemory.clear(httpSession.getId());
-    }
+	@GetMapping("/history")
+	public List<Message> history(HttpSession httpSession) {
+		return this.chatMemory.get(httpSession.getId());
+	}
+
+	@DeleteMapping("/history/clear")
+	public void clearHistory(HttpSession httpSession) {
+		this.chatMemory.clear(httpSession.getId());
+	}
 
 }
